@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstdlib>
+#include <utility>
 
 template < typename Type>
 	class ArrayPtr
@@ -15,10 +16,10 @@ template < typename Type>
 		}
 
 		// Конструктор из сырого указателя, хранящего адрес массива в куче либо nullptr
-		explicit ArrayPtr(Type *raw_ptr) noexcept: raw_ptr_(raw_ptr) {};
+		explicit ArrayPtr(Type* raw_ptr) noexcept: raw_ptr_(raw_ptr) {};
 
 		// Запрещаем копирование
-		ArrayPtr(const ArrayPtr &) = delete;
+		ArrayPtr(const ArrayPtr&) = delete;
 
 		~ArrayPtr()
 		{
@@ -26,7 +27,7 @@ template < typename Type>
 		}
 
 		// Запрещаем присваивание
-		ArrayPtr &operator=(const ArrayPtr &) = delete;
+		ArrayPtr &operator=(const ArrayPtr&) = delete;
 
 		// Прекращает владением массивом в памяти, возвращает значение адреса массива
 		// После вызова метода указатель на массив должен обнулиться
@@ -36,13 +37,13 @@ template < typename Type>
 		}
 
 		// Возвращает ссылку на элемент массива с индексом index
-		Type &operator[](size_t index) noexcept
+		Type& operator[](size_t index) noexcept
 		{
 			return raw_ptr_[index];
 		}
 
 		// Возвращает константную ссылку на элемент массива с индексом index
-		const Type &operator[](size_t index) const noexcept
+		const Type& operator[](size_t index) const noexcept
 		{
 			return raw_ptr_[index];
 		}
@@ -60,23 +61,23 @@ template < typename Type>
 		}
 
 		// Обменивается значениям указателя на массив с объектом other
-		void swap(ArrayPtr & other) noexcept
+		void swap(ArrayPtr& other) noexcept
 		{
 			std::swap(raw_ptr_, other.raw_ptr_);
 		}
 
 		//Оператор перемещения
-		ArrayPtr &operator=(ArrayPtr && other)
+		ArrayPtr& operator=(ArrayPtr&& other)
 		{
 			raw_ptr_ = std::move(other.raw_ptr_);
 			return * this;
 		}
 
 		// Конструктор перемещения
-		explicit ArrayPtr(ArrayPtr && other) noexcept
+		explicit ArrayPtr(ArrayPtr&& other) noexcept
 		{
 			swap(other);
 		}
 
-		private: Type *raw_ptr_ = nullptr;
+		private: Type* raw_ptr_ = nullptr;
 	};
